@@ -116,7 +116,8 @@ public class StackStorageService {
         if (!ingeplandePosts.stream().filter(new Predicate<IngeplandePost>() {
             @Override
             public boolean test(IngeplandePost ingeplandePost) {
-                return ingeplandePost.getTijdstipUitgevoerd() != null;
+                LOGGER.info("{}", ingeplandePost.getTijdstipUitgevoerd());
+                return ingeplandePost.getTijdstipUitgevoerd() == null;
             }
         }).findAny().isPresent()) {
             LOGGER.info("opruimen : {}", WEBDAV_SERVER + ingeplandePost.getResource());
