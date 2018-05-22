@@ -1,17 +1,16 @@
 package nl.lakedigital.djfc.service;
 
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.*;
-import static org.easymock.EasyMock.*;
-
 import org.easymock.EasyMockRunner;
 import org.easymock.EasyMockSupport;
-import org.easymock.*;
-import org.junit.*;
+import org.easymock.TestSubject;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.util.*;
 import java.util.ArrayList;
+import java.util.List;
+
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
 
 @RunWith(EasyMockRunner.class)
 public class TagServiceTest extends EasyMockSupport {
@@ -23,6 +22,8 @@ public class TagServiceTest extends EasyMockSupport {
         String bestandsnaam = "def,ghi";
         List<String> verwacht = new ArrayList<>();
         verwacht.add("klazienaveneryoungtimervrienden");
+        verwacht.add("oldtimer");
+        verwacht.add("youngtimer");
 
         assertThat(tagService.genereerTags(bestandsnaam,""),is(verwacht));
     }
@@ -31,18 +32,23 @@ public class TagServiceTest extends EasyMockSupport {
         String bestandsnaam = "xyz/jkl/def,ghi";
         List<String> verwacht = new ArrayList<>();
         verwacht.add("klazienaveneryoungtimervrienden");
+        verwacht.add("oldtimer");
         verwacht.add("xyz");
         verwacht.add("jkl");
+        verwacht.add("youngtimer");
 
         assertThat(tagService.genereerTags(bestandsnaam,""),is(verwacht));
     }
     @Test
-    public void genereerTagsBestandsnaamMetDirsMetSpatie() {
-        String bestandsnaam = "xyz/jkl mno/def,ghi";
+    public void genereerTagsBestandsnaamMetDirsMetKomma() {
+        String bestandsnaam = "fgh,xyz/jkl mno/def,ghi";
         List<String> verwacht = new ArrayList<>();
         verwacht.add("klazienaveneryoungtimervrienden");
+        verwacht.add("oldtimer");
+        verwacht.add("fgh");
         verwacht.add("xyz");
         verwacht.add("jkl");
+        verwacht.add("youngtimer");
         verwacht.add("mno");
 
         assertThat(tagService.genereerTags(bestandsnaam,""),is(verwacht));
@@ -52,6 +58,8 @@ public class TagServiceTest extends EasyMockSupport {
         String bestandsnaam = "webdavpad/def,ghi";
         List<String> verwacht = new ArrayList<>();
         verwacht.add("klazienaveneryoungtimervrienden");
+        verwacht.add("oldtimer");
+        verwacht.add("youngtimer");
 
         assertThat(tagService.genereerTags(bestandsnaam,"webdavpad"),is(verwacht));
     }

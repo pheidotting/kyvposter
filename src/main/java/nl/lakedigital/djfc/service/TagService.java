@@ -2,7 +2,6 @@ package nl.lakedigital.djfc.service;
 
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -19,12 +18,16 @@ public class TagService {
         for (int i = 0; i < dirs.length - 1; i++) {
             if (dirs[i] != null && !"".equals(dirs[i])) {
                 for(String dir : dirs[i].split(" ")){
-                    tags.add(dir);
+                    for (String d : dir.split(",")) {
+                        tags.add(d);
+                    }
                 }
             }
         }
 
         tags.add("klazienaveneryoungtimervrienden");
+        tags.add("youngtimer");
+        tags.add("oldtimer");
 
         return newArrayList(tags);
     }
