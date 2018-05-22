@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd" >
+<log4j:configuration>
+    <!-- APPENDERS LIST -->
+    <!-- show log entries on console -->
+    <appender name="fileAppender" class="org.apache.log4j.FileAppender">
+        <param name="file" value="/var/log/djfc/kyv.log"/>
+        <param name="immediateFlush" value="true"/>
+        <!--<param name="threshold" value="debug"/>-->
+        <param name="DatePattern" value="'.'yyyy-MM-dd"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="[%p] %d %c %M - %m%n"/>
+        </layout>
+    </appender>
+
+    <logger name="javax.enterprise.system">
+        <level value="error"/>
+    </logger>
+    <logger name="javax.persistence">
+        <level value="info"/>
+    </logger>
+    <logger name="org.springframework">
+        <level value="info"/>
+    </logger>
+    <logger name="org.apache">
+        <level value="error"/>
+    </logger>
+    <logger name="org.hibernate">
+        <level value="error"/>
+    </logger>
+    <logger name="ch.vorburger">
+        <level value="off"/>
+    </logger>
+    <!--<logger name="nl.lakedigital.djfc">-->
+    <!--<level value="trace" />-->
+    <!--</logger>-->
+
+    <root>
+        <priority value="trace"/>
+        <appender-ref ref="fileAppender"/>
+    </root>
+</log4j:configuration>
