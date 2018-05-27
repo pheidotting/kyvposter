@@ -1,38 +1,20 @@
 package nl.lakedigital.djfc.web.controller;
 
-import com.google.gson.Gson;
-import com.restfb.DefaultFacebookClient;
-import com.restfb.FacebookClient;
-import com.restfb.Parameter;
-import com.restfb.Version;
-import com.restfb.exception.devicetoken.FacebookDeviceTokenCodeExpiredException;
-import com.restfb.exception.devicetoken.FacebookDeviceTokenDeclinedException;
-import com.restfb.exception.devicetoken.FacebookDeviceTokenPendingException;
-import com.restfb.exception.devicetoken.FacebookDeviceTokenSlowdownException;
-import com.restfb.scope.FacebookPermissions;
-import com.restfb.scope.ScopeBuilder;
-import com.restfb.types.Page;
-import com.restfb.types.User;
-import java.util.List;
-
 import nl.lakedigital.djfc.domain.IngeplandePost;
 import nl.lakedigital.djfc.models.GeplandePost;
 import nl.lakedigital.djfc.models.StackFile;
 import nl.lakedigital.djfc.service.*;
 import org.brunocvcunha.instagram4j.Instagram4j;
-import org.brunocvcunha.instagram4j.requests.InstagramSearchUsernameRequest;
 import org.brunocvcunha.instagram4j.requests.InstagramUploadPhotoRequest;
-import org.brunocvcunha.instagram4j.requests.payload.InstagramSearchUsernameResult;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.view.RedirectView;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.inject.Inject;
 import java.io.File;
 import java.io.IOException;
-import java.time.LocalDate;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 @RequestMapping("/facebook")
 @Controller
@@ -134,10 +116,18 @@ public class BaseController {
 
         return "";//String.valueOf(userResult.getUser().getFollower_count());
     }
-//
-//    @RequestMapping(method = RequestMethod.GET, value = "/inplannen")
-//    @ResponseBody
-////    public List<GeplandePost> inplannen() throws IOException {
+
+    @RequestMapping(method = RequestMethod.GET, value = "/opruimen")
+    @ResponseBody
+    public void opruimen() throws IOException {
+        IngeplandePost ingeplandePost = ingeplandePostService.lees(118L);
+
+        stackStorageService.opruimen(ingeplandePost);
+    }
+    ////
+    ////    @RequestMapping(method = RequestMethod.GET, value = "/inplannen")
+    ////    @ResponseBody
+    //////    public List<GeplandePost> inplannen() throws IOException {
 ////        return postInplanService.planPosts(LocalDate.now()).stream().map(new Function<GeplandePost, GeplandePost>() {
 ////            @Override
 ////            public GeplandePost apply(GeplandePost geplandePost) {

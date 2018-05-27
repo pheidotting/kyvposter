@@ -21,6 +21,7 @@ pipeline {
 
         stage ('Undeploy Testbak') {
             steps {
+                slackSend (color: '#4245f4', message: "${env.JOB_NAME} Start Builden")
                 sh '''
                     ssh jetty@192.168.91.230 rm -f /opt/jetty/webapps/kyvposter.war
                 '''
@@ -41,6 +42,9 @@ pipeline {
     post {
         success {
             slackSend (color: '#4245f4', message: "Afgerond : '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
+        }
+        failure {
+            slackSend (color: '#FF0000', message: "FOUT : '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
         }
     }
 }

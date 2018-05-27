@@ -12,6 +12,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -116,11 +117,12 @@ public class PostInplanService {
     }
 
     private boolean tijdOk(Dag dag, LocalTime tijd, List<GeplandePost> geplandePosts) {
+        int tussenRuimte = bepaalRuimteTussenPosts(dag.getStartTijd(), dag.getEindTijd(), dag.getAantalPosts());
         if (tijd.isBefore(dag.getStartTijd())) {
             return false;
         } else if (tijd.isAfter(dag.getEindTijd())) {
             return false;
-        } else if (!nietTeDichtBijAnderen(geplandePosts, tijd, 30)) {
+        } else if (!nietTeDichtBijAnderen(geplandePosts, tijd, tussenRuimte)) {
             return false;
         }
 
@@ -137,4 +139,18 @@ public class PostInplanService {
 
         return ok[0];
     }
+
+    protected int bepaalRuimteTussenPosts(LocalTime begintijd, LocalTime eindtijd, int aantalPosts) {
+        long aantalMinuten = begintijd.until(eindtijd, ChronoUnit.MINUTES);
+
+        long tussenruimte = aantalMinuten / (aantalPosts + 1);
+
+        int result = (int) (tussenruimte - (tussenruimte * 0.2));
+
+        if (result < 1) {
+            result = 1;
+        }
+        return result;
+    }
 }
+
