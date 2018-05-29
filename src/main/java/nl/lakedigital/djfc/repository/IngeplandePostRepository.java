@@ -66,7 +66,7 @@ public class IngeplandePostRepository {
 
     @Transactional
     public IngeplandePost laatstVerstuurdePost() {
-        Query query = getSession().getNamedQuery("IngeplandePost.laatstVerstuurdePost");
+        Query query = getSession().getNamedQuery("IngeplandePost.laatstVerstuurdePost").setMaxResults(1);
 
         return (IngeplandePost) query.uniqueResult();
     }

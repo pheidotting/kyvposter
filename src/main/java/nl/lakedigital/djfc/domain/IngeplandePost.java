@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
         @NamedQuery(name="IngeplandePost.ingeplandeOnverzondenPostsVoorDatum",query = "select p from IngeplandePost p where p.tijdstipUitgevoerd is null and p.tijdstipIngepland > :startTijdstip"),// and p.tijdstipIngepland < :eindTijdstip")
         @NamedQuery(name = "IngeplandePost.overgeblevenPosts", query = "select p from IngeplandePost p where p.tijdstipUitgevoerd is null"),// and p.tijdstipIngepland < :eindTijdstip")
         @NamedQuery(name = "IngeplandePost.leesBijResource", query = "select p from IngeplandePost p where p.resource = :resource"),//
-        @NamedQuery(name = "IngeplandePost.laatstVerstuurdePost", query = "select p from IngeplandePost p order by p.tijdstipUitgevoerd desc limit 1")
+        @NamedQuery(name = "IngeplandePost.laatstVerstuurdePost", query = "select p from IngeplandePost p order by p.tijdstipUitgevoerd desc")
 })
 public class IngeplandePost {
     @Id
