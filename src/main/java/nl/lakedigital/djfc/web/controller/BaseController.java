@@ -95,7 +95,7 @@ public class BaseController {
         IngeplandePost ingeplandePost = ingeplandePostService.lees(id);
 
         StackFile stackFile = new StackFile(tagService.genereerTags(ingeplandePost.getResource(), stackStorageService.getWEBDAV_PATH()), ingeplandePost.getResource());
-        GeplandePost geplandePost = new GeplandePost(ingeplandePost.getMedia(), ingeplandePost.getTijdstipIngepland(), stackFile);
+        GeplandePost geplandePost = new GeplandePost(null, ingeplandePost.getMedia(), ingeplandePost.getTijdstipIngepland(), stackFile);
 
         //        instagramService.voeruit(geplandePost);
         facebookService.voeruit(geplandePost);

@@ -7,14 +7,20 @@ public class GeplandePost {
         FACEBOOK, INSTAGRAM;
     }
 
+    private Long id;
     private Media media;
     private LocalDateTime tijdstip;
     private StackFile stackFile;
 
-    public GeplandePost(Media media, LocalDateTime tijdstip, StackFile stackFile) {
+    public GeplandePost(Long id, Media media, LocalDateTime tijdstip, StackFile stackFile) {
+        this.id = id;
         this.media = media;
         this.tijdstip = tijdstip;
         this.stackFile = stackFile;
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public Media getMedia() {

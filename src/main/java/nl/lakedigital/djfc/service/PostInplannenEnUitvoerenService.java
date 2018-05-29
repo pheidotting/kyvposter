@@ -63,7 +63,7 @@ public class PostInplannenEnUitvoerenService {
 
             StackFile stackFile = new StackFile(tagService.genereerTags(ingeplandePost.getResource(), stackStorageService.getWEBDAV_PATH()), ingeplandePost.getResource());
 
-            GeplandePost geplandePost = new GeplandePost(ingeplandePost.getMedia(), ingeplandePost.getTijdstipIngepland(), stackFile);
+            GeplandePost geplandePost = new GeplandePost(ingeplandePost.getId(), ingeplandePost.getMedia(), ingeplandePost.getTijdstipIngepland(), stackFile);
 
             LOGGER.info("Uitvoeren post met id {}, media is {}", ingeplandePost.getId(), ingeplandePost.getMedia());
             try {

@@ -163,7 +163,7 @@ public class PostInplanService {
                         LocalDateTime tijdstip = LocalDateTime.of(datum, randomTime);
                         //                        LOGGER.info("tijdstip : {}",tijdstip);
 
-                        result.add(new GeplandePost(media, tijdstip, stackFile));
+                        result.add(new GeplandePost(null, media, tijdstip, stackFile));
                     }
                 }
             });

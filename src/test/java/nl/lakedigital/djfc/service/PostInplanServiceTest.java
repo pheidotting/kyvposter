@@ -50,9 +50,9 @@ public class PostInplanServiceTest extends EasyMockSupport {
 
     @Test
     public void nietTeDichtBijAnderen() {
-        GeplandePost geplandePost1 = new GeplandePost(GeplandePost.Media.FACEBOOK, LocalDateTime.of(2018, 1, 1, 12, 00),null);
-        GeplandePost geplandePost2 = new GeplandePost(GeplandePost.Media.FACEBOOK, LocalDateTime.of(2018, 1, 1, 13, 00),null);
-        GeplandePost geplandePost3 = new GeplandePost(GeplandePost.Media.FACEBOOK, LocalDateTime.of(2018, 1, 1, 15, 30),null);
+        GeplandePost geplandePost1 = new GeplandePost(null, GeplandePost.Media.FACEBOOK, LocalDateTime.of(2018, 1, 1, 12, 00), null);
+        GeplandePost geplandePost2 = new GeplandePost(null, GeplandePost.Media.FACEBOOK, LocalDateTime.of(2018, 1, 1, 13, 00), null);
+        GeplandePost geplandePost3 = new GeplandePost(null, GeplandePost.Media.FACEBOOK, LocalDateTime.of(2018, 1, 1, 15, 30), null);
 
         List<GeplandePost> lijst = newArrayList(geplandePost3, geplandePost2, geplandePost1);
 
