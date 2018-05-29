@@ -1,13 +1,13 @@
 package nl.lakedigital.djfc.service;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.List;
 import nl.lakedigital.djfc.domain.IngeplandePost;
 import nl.lakedigital.djfc.repository.IngeplandePostRepository;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class IngeplandePostService {
@@ -27,12 +27,25 @@ public class IngeplandePostService {
 public IngeplandePost lees(Long id){
    return     ingepladePostRepository.lees(id);
 }
+
+    public void stelUit(IngeplandePost ingeplandePost, int aantalMinuten) {
+        ingeplandePost.setTijdstipUitgevoerd(LocalDateTime.now().plusMinutes(aantalMinuten));
+        opslaan(ingeplandePost);
+    }
+
+    public List<IngeplandePost> overgeblevenPosts() {
+        return ingepladePostRepository.overgeblevenPosts();
+    }
     public void markeerAlsVerzonden(IngeplandePost ingeplandePost){
         ingeplandePost.setTijdstipUitgevoerd(LocalDateTime.now());
         ingepladePostRepository.opslaan(ingeplandePost);
     }
 
-    public void opslaan(List<IngeplandePost> ingeplandePosts){
+    public IngeplandePost laatstVerstuurdePost() {
+        return ingepladePostRepository.laatstVerstuurdePost();
+    }
+
+    public void opslaan(List<IngeplandePost> ingeplandePosts) {
         ingepladePostRepository.opslaan(ingeplandePosts);
     }
     public void opslaan(IngeplandePost ingeplandePost){

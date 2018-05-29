@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -30,15 +31,17 @@ public class PostInplanService {
     private StackStorageService stackStorageService;
 
     public enum Dag {
-        Maandag(3, MONDAY, 17, 0, 22, 30), Dinsdag(3, TUESDAY, 17, 0, 22, 30), Woensdag(3, WEDNESDAY, 17, 0, 22, 30), Donderdag(3, THURSDAY, 17, 0, 22, 30), Vrijdag(3, FRIDAY, 17, 0, 22, 30), Zaterdag(4, SATURDAY, 15, 0, 22, 30), Zondag(5, SUNDAY, 12, 0, 22, 30);
+        Maandag(MONDAY, 2, 3, 17, 0, 22, 30), Dinsdag(TUESDAY, 2, 3, 17, 0, 22, 30), Woensdag(WEDNESDAY, 2, 3, 17, 0, 22, 30), Donderdag(THURSDAY, 2, 3, 17, 0, 22, 30), Vrijdag(FRIDAY, 2, 3, 17, 0, 22, 30), Zaterdag(SATURDAY, 3, 4, 15, 0, 22, 30), Zondag(SUNDAY, 4, 6, 12, 0, 22, 30);
         private DayOfWeek dayOfWeek;
-        private int aantalPosts;
+        private int minimumAantalPosts;
+        private int maximumAantalPosts;
         private LocalTime startTijd;
         private LocalTime eindTijd;
 
-        Dag(int aantalPosts, DayOfWeek dayOfWeek, int startTijdUur, int startTijdMinuut, int eindTijdUur, int eindTijdMinuut) {
+        Dag(DayOfWeek dayOfWeek, int minimumAantalPosts, int maximumAantalPosts, int startTijdUur, int startTijdMinuut, int eindTijdUur, int eindTijdMinuut) {
             this.dayOfWeek = dayOfWeek;
-            this.aantalPosts = aantalPosts;
+            this.minimumAantalPosts = minimumAantalPosts;
+            this.maximumAantalPosts = maximumAantalPosts;
             this.startTijd = LocalTime.of(startTijdUur, startTijdMinuut);
             this.eindTijd = LocalTime.of(eindTijdUur, eindTijdMinuut);
         }
@@ -47,8 +50,12 @@ public class PostInplanService {
             return dayOfWeek;
         }
 
-        public int getAantalPosts() {
-            return aantalPosts;
+        public int getMinimumAantalPosts() {
+            return minimumAantalPosts;
+        }
+
+        public int getMaximumAantalPosts() {
+            return maximumAantalPosts;
         }
 
         public LocalTime getStartTijd() {
@@ -59,6 +66,9 @@ public class PostInplanService {
             return eindTijd;
         }
 
+        public static Dag getFromDayOfWeek() {
+            return getFromDayOfWeek(LocalDate.now().getDayOfWeek());
+        }
         public static Dag getFromDayOfWeek(DayOfWeek dayOfWeek) {
             for (Dag dag : Dag.values()) {
                 if (dag.getDayOfWeek() == dayOfWeek) {
@@ -74,11 +84,13 @@ public class PostInplanService {
 
         Dag dag = Dag.getFromDayOfWeek(datum.getDayOfWeek());
 
-        LOGGER.info("Het is vandaag {}, dus we gaan {} posts inplannen per Social Media, dus {} in totaal", dag.toString(),dag.getAantalPosts(),(dag.getAantalPosts()*GeplandePost.Media.values().length));
+        int aantalPosts = ThreadLocalRandom.current().nextInt(dag.getMinimumAantalPosts(), dag.getMaximumAantalPosts());
+
+        LOGGER.info("Het is vandaag {}, dus we gaan {} posts inplannen per Social Media, dus {} in totaal", dag.toString(), aantalPosts, (aantalPosts * GeplandePost.Media.values().length));
 
         List<StackFile> stackFiles = null;
         try {
-            stackFiles = stackStorageService.leesRandom(dag.getAantalPosts());
+            stackFiles = stackStorageService.leesRandom(aantalPosts);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -86,6 +98,8 @@ public class PostInplanService {
         LOGGER.info("{} Stack bestanden opgehaald",stackFiles.size());
 
         if (stackFiles != null) {
+            int finalAantalPosts = aantalPosts;
+            final int[] teller = {0};
             stackFiles.stream().forEach(new Consumer<StackFile>() {
                 @Override
                 public void accept(StackFile stackFile) {
@@ -95,9 +109,10 @@ public class PostInplanService {
                         LOGGER.info("Media : {}",media);
                         LocalTime randomTime = LocalTime.now();
 
-                        while (!tijdOk(dag, randomTime, result)) {
+                        while (!tijdOk(dag, randomTime, result, finalAantalPosts) && ++teller[0] < 11) {
                             randomTime = LocalTime.MIN.plusSeconds(generator.nextLong());
                         }
+                        teller[0] = 0;
 
                         LocalDateTime tijdstip = LocalDateTime.of(datum, randomTime);
                         LOGGER.info("tijdstip : {}",tijdstip);
@@ -106,6 +121,10 @@ public class PostInplanService {
                     }
                 }
             });
+
+            if (teller[0] > 10) {
+                return planPosts(datum);
+            }
         }
 
         return result.stream().sorted(new Comparator<GeplandePost>() {
@@ -116,8 +135,8 @@ public class PostInplanService {
         }).collect(Collectors.toList());
     }
 
-    private boolean tijdOk(Dag dag, LocalTime tijd, List<GeplandePost> geplandePosts) {
-        int tussenRuimte = bepaalRuimteTussenPosts(dag.getStartTijd(), dag.getEindTijd(), dag.getAantalPosts());
+    private boolean tijdOk(Dag dag, LocalTime tijd, List<GeplandePost> geplandePosts, int aantalPosts) {
+        int tussenRuimte = bepaalRuimteTussenPosts(dag.getStartTijd(), dag.getEindTijd(), aantalPosts);
         if (tijd.isBefore(dag.getStartTijd())) {
             return false;
         } else if (tijd.isAfter(dag.getEindTijd())) {

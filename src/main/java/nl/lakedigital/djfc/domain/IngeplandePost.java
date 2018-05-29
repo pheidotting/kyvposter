@@ -10,7 +10,9 @@ import java.time.LocalDateTime;
 @NamedQueries({
         @NamedQuery(name="IngeplandePost.ingeplandePostsVoorDatum",query = "select p from IngeplandePost p where p.tijdstipIngepland > :startTijdstip"),// and p.tijdstipUitgevoerd < :eindTijdstip"),//
         @NamedQuery(name="IngeplandePost.ingeplandeOnverzondenPostsVoorDatum",query = "select p from IngeplandePost p where p.tijdstipUitgevoerd is null and p.tijdstipIngepland > :startTijdstip"),// and p.tijdstipIngepland < :eindTijdstip")
-        @NamedQuery(name="IngeplandePost.leesBijResource",query = "select p from IngeplandePost p where p.resource = :resource")
+        @NamedQuery(name = "IngeplandePost.overgeblevenPosts", query = "select p from IngeplandePost p where p.tijdstipUitgevoerd is null"),// and p.tijdstipIngepland < :eindTijdstip")
+        @NamedQuery(name = "IngeplandePost.leesBijResource", query = "select p from IngeplandePost p where p.resource = :resource"),//
+        @NamedQuery(name = "IngeplandePost.laatstVerstuurdePost", query = "select p from IngeplandePost p order by tijdstipUitgevoerd desc limit 1")
 })
 public class IngeplandePost {
     @Id

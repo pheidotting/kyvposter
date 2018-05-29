@@ -65,6 +65,20 @@ public class IngeplandePostRepository {
     }
 
     @Transactional
+    public IngeplandePost laatstVerstuurdePost() {
+        Query query = getSession().getNamedQuery("IngeplandePost.laatstVerstuurdePost");
+
+        return (IngeplandePost) query.uniqueResult();
+    }
+
+    @Transactional
+    public List<IngeplandePost> overgeblevenPosts() {
+        Query query = getSession().getNamedQuery("IngeplandePost.overgeblevenPosts");
+
+        return query.list();
+    }
+
+    @Transactional
     public List<IngeplandePost> ingeplandePostsVoorDatum(LocalDate datum) {
         LocalDateTime startTijdstip = LocalDateTime.of(datum, LocalTime.of(0, 0, 1));
         LocalDateTime eindTijdstip = LocalDateTime.of(datum, LocalTime.of(23, 59, 59));

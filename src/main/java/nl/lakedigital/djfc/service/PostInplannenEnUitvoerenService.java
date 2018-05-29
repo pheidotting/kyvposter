@@ -13,9 +13,6 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @Service
@@ -38,20 +35,22 @@ public class PostInplannenEnUitvoerenService {
     public void planEnVoerUit() {
         List<IngeplandePost> alleIngeplandePostsVandaag = ingeplandePostService.ingeplandePostsVoorDatum(LocalDate.now());
         List<IngeplandePost> alleIngeplandeOnverzondenPostsVandaag = ingeplandePostService.ingeplandeOnverzondenPostsVoorDatum(LocalDate.now());
+        List<IngeplandePost> overgeblevenPosts = ingeplandePostService.overgeblevenPosts();
 
         if (alleIngeplandePostsVandaag.isEmpty()) {
-            List<IngeplandePost> nieuweLijst = postInplanService.planPosts(LocalDate.now()).stream().map(new Function<GeplandePost, IngeplandePost>() {
-                @Override
-                public IngeplandePost apply(GeplandePost geplandePost) {
-                    LOGGER.info("{} - {}", geplandePost.getMedia(), geplandePost.getTijdstip());
-                    IngeplandePost ingeplandePost = new IngeplandePost();
+            PostInplanService.Dag dag = PostInplanService.Dag.getFromDayOfWeek();
+            overgeblevenPosts.stream().forEach(ingeplandePost -> ingeplandePost.setTijdstipIngepland(LocalDateTime.of(LocalDate.now(), dag.getStartTijd().plusMinutes(10))));
+            ingeplandePostService.opslaan(overgeblevenPosts);
 
-                    ingeplandePost.setResource(geplandePost.getStackFile().getUrl());
-                    ingeplandePost.setTijdstipIngepland(geplandePost.getTijdstip());
-                    ingeplandePost.setMedia(geplandePost.getMedia());
+            List<IngeplandePost> nieuweLijst = postInplanService.planPosts(LocalDate.now()).stream().map(geplandePost -> {
+                LOGGER.info("{} - {}", geplandePost.getMedia(), geplandePost.getTijdstip());
+                IngeplandePost ingeplandePost = new IngeplandePost();
 
-                    return ingeplandePost;
-                }
+                ingeplandePost.setResource(geplandePost.getStackFile().getUrl());
+                ingeplandePost.setTijdstipIngepland(geplandePost.getTijdstip());
+                ingeplandePost.setMedia(geplandePost.getMedia());
+
+                return ingeplandePost;
             }).collect(Collectors.toList());
 
             ingeplandePostService.opslaan(nieuweLijst);
@@ -59,31 +58,23 @@ public class PostInplannenEnUitvoerenService {
         }
 
 
-        alleIngeplandeOnverzondenPostsVandaag.stream().filter(new Predicate<IngeplandePost>() {
-            @Override
-            public boolean test(IngeplandePost ingeplandePost) {
-                return ingeplandePost.getTijdstipIngepland().isBefore(LocalDateTime.now());
+        alleIngeplandeOnverzondenPostsVandaag.stream().filter(ingeplandePost -> ingeplandePost.getTijdstipIngepland().isBefore(LocalDateTime.now())).forEach(ingeplandePost -> {
+            rateLimiter.acquire();
+
+            StackFile stackFile = new StackFile(tagService.genereerTags(ingeplandePost.getResource(), stackStorageService.getWEBDAV_PATH()), ingeplandePost.getResource());
+
+            GeplandePost geplandePost = new GeplandePost(ingeplandePost.getMedia(), ingeplandePost.getTijdstipIngepland(), stackFile);
+
+            LOGGER.info("Uitvoeren post met id {}, media is {}", ingeplandePost.getId(), ingeplandePost.getMedia());
+            try {
+                uitvoerenService.voeruit(geplandePost);
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        }).forEach(new Consumer<IngeplandePost>() {
-            @Override
-            public void accept(IngeplandePost ingeplandePost) {
-                rateLimiter.acquire();
 
-                StackFile stackFile = new StackFile(tagService.genereerTags(ingeplandePost.getResource(), stackStorageService.getWEBDAV_PATH()), ingeplandePost.getResource());
+            ingeplandePostService.markeerAlsVerzonden(ingeplandePost);
 
-                GeplandePost geplandePost = new GeplandePost(ingeplandePost.getMedia(), ingeplandePost.getTijdstipIngepland(), stackFile);
-
-                LOGGER.info("Uitvoeren post met id {}, media is {}", ingeplandePost.getId(), ingeplandePost.getMedia());
-                try {
-                    uitvoerenService.voeruit(geplandePost);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-                ingeplandePostService.markeerAlsVerzonden(ingeplandePost);
-
-                stackStorageService.opruimen(ingeplandePost);
-            }
+            stackStorageService.opruimen(ingeplandePost);
         });
     }
 }
