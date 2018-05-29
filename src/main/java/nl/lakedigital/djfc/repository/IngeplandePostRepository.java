@@ -80,7 +80,7 @@ public class IngeplandePostRepository {
 
     @Transactional
     public void opruimen() {
-        getSession().createSQLQuery("delete from IngeplandePost i where i.tijdstipUitgevoerd < " + LocalDateTime.now().minusDays(2)).executeUpdate();
+        getSession().createSQLQuery("delete from IngeplandePost p where p.tijdstipUitgevoerd < " + LocalDateTime.now().minusDays(2)).executeUpdate();
     }
 
     @Transactional
