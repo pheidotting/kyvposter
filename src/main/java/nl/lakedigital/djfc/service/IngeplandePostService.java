@@ -29,7 +29,7 @@ public IngeplandePost lees(Long id){
 }
 
     public void stelUit(IngeplandePost ingeplandePost, int aantalMinuten) {
-        ingeplandePost.setTijdstipUitgevoerd(LocalDateTime.now().plusMinutes(aantalMinuten));
+        ingeplandePost.setTijdstipIngepland(LocalDateTime.now().plusMinutes(aantalMinuten));
         opslaan(ingeplandePost);
     }
 
