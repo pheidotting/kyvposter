@@ -14,19 +14,21 @@ public class IngeplandePostService {
     @Inject
     private IngeplandePostRepository ingepladePostRepository;
 
-    public List<IngeplandePost> ingeplandePostsVoorDatum(LocalDate datum){
+    public List<IngeplandePost> ingeplandePostsVoorDatum(LocalDate datum) {
         return ingepladePostRepository.ingeplandePostsVoorDatum(datum);
     }
-    public List<IngeplandePost> ingeplandeOnverzondenPostsVoorDatum(LocalDate datum){
+
+    public List<IngeplandePost> ingeplandeOnverzondenPostsVoorDatum(LocalDate datum) {
         return ingepladePostRepository.ingeplandeOnverzondenPostsVoorDatum(datum);
     }
 
-    public List<IngeplandePost> leesPostsMetZelfdeResource(IngeplandePost ingeplandePost){
+    public List<IngeplandePost> leesPostsMetZelfdeResource(IngeplandePost ingeplandePost) {
         return ingepladePostRepository.leesBijResource(ingeplandePost.getResource());
     }
-public IngeplandePost lees(Long id){
-   return     ingepladePostRepository.lees(id);
-}
+
+    public IngeplandePost lees(Long id) {
+        return ingepladePostRepository.lees(id);
+    }
 
     public void stelUit(IngeplandePost ingeplandePost, int aantalMinuten) {
         ingeplandePost.setTijdstipIngepland(LocalDateTime.now().plusMinutes(aantalMinuten));
@@ -36,7 +38,8 @@ public IngeplandePost lees(Long id){
     public List<IngeplandePost> overgeblevenPosts() {
         return ingepladePostRepository.overgeblevenPosts();
     }
-    public void markeerAlsVerzonden(IngeplandePost ingeplandePost){
+
+    public void markeerAlsVerzonden(IngeplandePost ingeplandePost) {
         ingeplandePost.setTijdstipUitgevoerd(LocalDateTime.now());
         ingepladePostRepository.opslaan(ingeplandePost);
     }
@@ -48,7 +51,8 @@ public IngeplandePost lees(Long id){
     public void opslaan(List<IngeplandePost> ingeplandePosts) {
         ingepladePostRepository.opslaan(ingeplandePosts);
     }
-    public void opslaan(IngeplandePost ingeplandePost){
+
+    public void opslaan(IngeplandePost ingeplandePost) {
         ingepladePostRepository.opslaan(ingeplandePost);
     }
 

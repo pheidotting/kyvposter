@@ -13,10 +13,10 @@ public abstract class SocialMediaService {
     @Inject
     protected StackStorageService stackStorageService;
 
-    protected InputStream getStackBestand(GeplandePost geplandePost)  {
+    protected InputStream getStackBestand(GeplandePost geplandePost) {
         try {
-            LOGGER.info("Ophalen {}",stackStorageService.getWEBDAV_SERVER()+ geplandePost.getStackFile().getUrl());
-            return stackStorageService.getSardine().get(stackStorageService.getWEBDAV_SERVER()+ geplandePost.getStackFile().getUrl());
+            LOGGER.info("Ophalen {}", stackStorageService.getWEBDAV_SERVER() + geplandePost.getStackFile().getUrl());
+            return stackStorageService.getSardine().get(stackStorageService.getWEBDAV_SERVER() + geplandePost.getStackFile().getUrl());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -24,5 +24,6 @@ public abstract class SocialMediaService {
     }
 
     abstract void voeruit(GeplandePost geplandePost) throws IOException;
+
     abstract boolean voorMij(GeplandePost.Media media);
 }

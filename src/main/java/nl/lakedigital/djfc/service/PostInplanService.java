@@ -26,7 +26,7 @@ import static java.time.DayOfWeek.*;
 
 @Service
 public class PostInplanService {
-    private final static Logger LOGGER =LoggerFactory.getLogger(PostInplanService.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(PostInplanService.class);
 
     @Inject
     private StackStorageService stackStorageService;
@@ -70,6 +70,7 @@ public class PostInplanService {
         public static Dag getFromDayOfWeek() {
             return getFromDayOfWeek(LocalDate.now().getDayOfWeek());
         }
+
         public static Dag getFromDayOfWeek(DayOfWeek dayOfWeek) {
             for (Dag dag : Dag.values()) {
                 if (dag.getDayOfWeek() == dayOfWeek) {
@@ -96,7 +97,7 @@ public class PostInplanService {
             e.printStackTrace();
         }
 
-        LOGGER.info("{} Stack bestanden opgehaald",stackFiles.size());
+        LOGGER.info("{} Stack bestanden opgehaald", stackFiles.size());
 
         if (stackFiles != null) {
             int tussenRuimte = bepaalRuimteTussenPosts(dag.getStartTijd(), dag.getEindTijd(), aantalPosts);

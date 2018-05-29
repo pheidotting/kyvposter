@@ -52,12 +52,12 @@ public class IngeplandePostRepository {
     }
 
     @Transactional
-    public IngeplandePost lees(Long id){
-        return getSession().get(IngeplandePost.class,id);
+    public IngeplandePost lees(Long id) {
+        return getSession().get(IngeplandePost.class, id);
     }
 
     @Transactional
-    public List<IngeplandePost> leesBijResource(String resource){
+    public List<IngeplandePost> leesBijResource(String resource) {
         Query query = getSession().getNamedQuery("IngeplandePost.leesBijResource");
         query.setParameter("resource", resource);
 
