@@ -17,7 +17,6 @@ public class CronServlet {
 
     @Scheduled(fixedDelay = 58000)
     public void run() {
-//        LOGGER.info("RUN FORREST");
         postInplannenEnUitvoerenService.planEnVoerUit();
     }
 }

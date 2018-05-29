@@ -107,10 +107,12 @@ public class PostInplanService {
                     Random generator = new Random(System.currentTimeMillis());
                     for (GeplandePost.Media media : GeplandePost.Media.values()) {
                         LOGGER.info("Media : {}",media);
-                        LocalTime randomTime = LocalTime.now();
+                        LocalTime randomTime = null;
+                        boolean ok = false;
 
-                        while (!tijdOk(dag, randomTime, result, finalAantalPosts) && ++teller[0] < 11) {
+                        while (!ok) {
                             randomTime = LocalTime.MIN.plusSeconds(generator.nextLong());
+                            ok = tijdOk(dag, randomTime, result, finalAantalPosts) && ++teller[0] < 11;
                         }
                         teller[0] = 0;
 
