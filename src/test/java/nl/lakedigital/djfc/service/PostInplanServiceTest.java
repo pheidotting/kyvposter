@@ -70,10 +70,10 @@ public class PostInplanServiceTest extends EasyMockSupport {
 
     @Test
     public void bepaalRuimteTussenPosts() {
-        assertThat(postInplanService.bepaalRuimteTussenPosts(LocalTime.of(9, 0), LocalTime.of(10, 0), 2), is(16));
-        assertThat(postInplanService.bepaalRuimteTussenPosts(LocalTime.of(9, 0), LocalTime.of(10, 0), 10), is(4));
+        assertThat(postInplanService.bepaalRuimteTussenPosts(LocalTime.of(9, 0), LocalTime.of(10, 0), 2), is(10));
+        assertThat(postInplanService.bepaalRuimteTussenPosts(LocalTime.of(9, 0), LocalTime.of(10, 0), 10), is(2));
         assertThat(postInplanService.bepaalRuimteTussenPosts(LocalTime.of(9, 0), LocalTime.of(10, 0), 60), is(1));
         assertThat(postInplanService.bepaalRuimteTussenPosts(LocalTime.of(9, 0), LocalTime.of(10, 0), 120), is(1));
-        assertThat(postInplanService.bepaalRuimteTussenPosts(LocalTime.of(12, 0), LocalTime.of(22, 30), 5), is(84));
+        assertThat(postInplanService.bepaalRuimteTussenPosts(LocalTime.of(12, 0), LocalTime.of(22, 30), 5), is(52));
     }
 }

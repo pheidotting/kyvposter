@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static java.time.DayOfWeek.*;
@@ -98,26 +99,68 @@ public class PostInplanService {
         LOGGER.info("{} Stack bestanden opgehaald",stackFiles.size());
 
         if (stackFiles != null) {
+            int tussenRuimte = bepaalRuimteTussenPosts(dag.getStartTijd(), dag.getEindTijd(), aantalPosts);
+
             int finalAantalPosts = aantalPosts;
             final int[] teller = {0};
             stackFiles.stream().forEach(new Consumer<StackFile>() {
                 @Override
                 public void accept(StackFile stackFile) {
-                    LOGGER.info("{}",stackFile.getUrl());
                     Random generator = new Random(System.currentTimeMillis());
+                    //                    GeplandePost.Media media= GeplandePost.Media.FACEBOOK;
                     for (GeplandePost.Media media : GeplandePost.Media.values()) {
-                        LOGGER.info("Media : {}",media);
+                        //                        LOGGER.info("Media : {}",media);
                         LocalTime randomTime = null;
                         boolean ok = false;
 
                         while (!ok) {
                             randomTime = LocalTime.MIN.plusSeconds(generator.nextLong());
-                            ok = tijdOk(dag, randomTime, result, finalAantalPosts) && ++teller[0] < 11;
+                            //                            LOGGER.info("A {}",randomTime);
+                            //                            LOGGER.info("B {}",teller[0]);
+
+                            //                            boolean tijdvakOk = false;
+                            while (!pastBinnenTijdvakDag(dag, randomTime)) {
+                                randomTime = LocalTime.MIN.plusSeconds(generator.nextLong());
+                            }
+                            //                            LOGGER.info("tijdvakOk {}",tijdvakOk);
+                            boolean nietTeDichtBijAnderen = nietTeDichtBijAnderen(result, randomTime, tussenRuimte);
+
+                            if (nietTeDichtBijAnderen) {
+                                ok = true;
+                            } else {
+                                //                                LOGGER.info("Tijd {}, teller {}",randomTime,teller[0]);
+                                LocalTime finalRandomTime = randomTime;
+                                //                                result.stream().map(new Function<GeplandePost, LocalTime>() {
+                                //                                    @Override
+                                //                                    public LocalTime apply(GeplandePost geplandePost) {
+                                //                                        return geplandePost.getTijdstip().toLocalTime();
+                                //                                    }
+                                //                                }).sorted(new Comparator<LocalTime>() {
+                                //                                    @Override
+                                //                                    public int compare(LocalTime o1, LocalTime o2) {
+                                //                                        return o1.compareTo(o2);
+                                //                                    }
+                                //                                }).forEach(new Consumer<LocalTime>() {
+                                //                                    @Override
+                                //                                    public void accept(LocalTime geplandePost) {
+                                ////                                        LOGGER.info("{} - {}",geplandePost,geplandePost.until(finalRandomTime,ChronoUnit.MINUTES));
+                                //                                    }
+                                //                                });
+                                teller[0]++;
+                            }
+
+                            //                            && teller[0] < 11;
+                            if (teller[0] > 20) {
+                                //                                LOGGER.info("Geen passende tijd gevonden, opnieuw, tussenruimte {}",tussenRuimte);
+                                result.clear();
+                                return;
+                            }
+                            //                            teller[0] = 0;
                         }
                         teller[0] = 0;
 
                         LocalDateTime tijdstip = LocalDateTime.of(datum, randomTime);
-                        LOGGER.info("tijdstip : {}",tijdstip);
+                        //                        LOGGER.info("tijdstip : {}",tijdstip);
 
                         result.add(new GeplandePost(media, tijdstip, stackFile));
                     }
@@ -137,14 +180,10 @@ public class PostInplanService {
         }).collect(Collectors.toList());
     }
 
-    private boolean tijdOk(Dag dag, LocalTime tijd, List<GeplandePost> geplandePosts, int aantalPosts) {
-        int tussenRuimte = bepaalRuimteTussenPosts(dag.getStartTijd(), dag.getEindTijd(), aantalPosts);
-
+    private boolean pastBinnenTijdvakDag(Dag dag, LocalTime tijd) {
         if (LocalDateTime.of(LocalDate.now(), tijd).isBefore(LocalDateTime.of(LocalDate.now(), dag.getStartTijd()))) {
             return false;
         } else if (LocalDateTime.of(LocalDate.now(), tijd).isAfter(LocalDateTime.of(LocalDate.now(), dag.getEindTijd()))) {
-            return false;
-        } else if (!nietTeDichtBijAnderen(geplandePosts, tijd, tussenRuimte)) {
             return false;
         }
 
@@ -153,9 +192,22 @@ public class PostInplanService {
 
     protected boolean nietTeDichtBijAnderen(List<GeplandePost> geplandePosts, LocalTime localTime, int minutenTussenPosts) {
         final boolean[] ok = {true};
-        geplandePosts.stream().map(geplandePost -> geplandePost.getTijdstip().toLocalTime()).forEach(localTimeBestaand -> {
-            if (localTime.isAfter(localTimeBestaand.minusMinutes(minutenTussenPosts)) && localTime.isBefore(localTimeBestaand.plusMinutes(minutenTussenPosts))) {
-                ok[0] = false;
+        geplandePosts.stream().map(new Function<GeplandePost, LocalTime>() {
+            @Override
+            public LocalTime apply(GeplandePost geplandePost) {
+                return geplandePost.getTijdstip().toLocalTime();
+            }
+        }).sorted(new Comparator<LocalTime>() {
+            @Override
+            public int compare(LocalTime o1, LocalTime o2) {
+                return o1.compareTo(o2);
+            }
+        }).forEach(new Consumer<LocalTime>() {
+            @Override
+            public void accept(LocalTime localTimeBestaand) {
+                if (localTime.isAfter(localTimeBestaand.minusMinutes(minutenTussenPosts)) && localTime.isBefore(localTimeBestaand.plusMinutes(minutenTussenPosts))) {
+                    ok[0] = false;
+                }
             }
         });
 
@@ -167,7 +219,7 @@ public class PostInplanService {
 
         long tussenruimte = aantalMinuten / (aantalPosts + 1);
 
-        int result = (int) (tussenruimte - (tussenruimte * 0.2));
+        int result = (int) (tussenruimte - (tussenruimte * 0.5));
 
         if (result < 1) {
             result = 1;
