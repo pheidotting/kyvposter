@@ -51,4 +51,8 @@ public IngeplandePost lees(Long id){
     public void opslaan(IngeplandePost ingeplandePost){
         ingepladePostRepository.opslaan(ingeplandePost);
     }
+
+    public void opruimen() {
+        ingepladePostRepository.opruimen();
+    }
 }

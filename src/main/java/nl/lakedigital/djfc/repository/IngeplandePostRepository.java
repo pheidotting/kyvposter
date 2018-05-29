@@ -79,6 +79,11 @@ public class IngeplandePostRepository {
     }
 
     @Transactional
+    public void opruimen() {
+        getSession().createSQLQuery("delete from IngeplandePost i where i.tijdstipUitgevoerd < " + LocalDateTime.now().minusDays(2)).executeUpdate();
+    }
+
+    @Transactional
     public List<IngeplandePost> ingeplandePostsVoorDatum(LocalDate datum) {
         LocalDateTime startTijdstip = LocalDateTime.of(datum, LocalTime.of(0, 0, 1));
         LocalDateTime eindTijdstip = LocalDateTime.of(datum, LocalTime.of(23, 59, 59));

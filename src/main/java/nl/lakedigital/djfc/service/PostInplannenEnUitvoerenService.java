@@ -75,6 +75,7 @@ public class PostInplannenEnUitvoerenService {
             ingeplandePostService.markeerAlsVerzonden(ingeplandePost);
 
             stackStorageService.opruimen(ingeplandePost);
+            ingeplandePostService.opruimen();
         });
     }
 }
