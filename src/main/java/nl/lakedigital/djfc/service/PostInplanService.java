@@ -137,8 +137,6 @@ public class PostInplanService {
 
     private boolean tijdOk(Dag dag, LocalTime tijd, List<GeplandePost> geplandePosts, int aantalPosts) {
         int tussenRuimte = bepaalRuimteTussenPosts(dag.getStartTijd(), dag.getEindTijd(), aantalPosts);
-        System.out.println(dag.getStartTijd());
-        System.out.println(dag.getEindTijd());
 
         if (LocalDateTime.of(LocalDate.now(), tijd).isBefore(LocalDateTime.of(LocalDate.now(), dag.getStartTijd()))) {
             return false;
