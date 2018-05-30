@@ -15,8 +15,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static com.google.common.collect.Lists.newArrayList;
@@ -60,20 +58,10 @@ public class StackStorageService {
         List<DavResource> resources = haalLijstOpServerOp(WEBDAV_SERVER + WEBDAV_PATH);
         List<StackFile> result = newArrayList();
 
-        List<DavResource> filteredResources = resources.stream().filter(new Predicate<DavResource>() {
-            @Override
-            public boolean test(DavResource davResource) {
-                return !davResource.toString().endsWith("/");
-            }
-        }).collect(Collectors.toList());
+        List<DavResource> filteredResources = resources.stream().filter(davResource -> !davResource.toString().endsWith("/")).collect(Collectors.toList());
 
         Collections.shuffle(filteredResources);
-        filteredResources.subList(0, aantal).stream().forEach(new Consumer<DavResource>() {
-            @Override
-            public void accept(DavResource davResource) {
-                result.add(new StackFile(tagService.genereerTags(davResource.toString(), WEBDAV_PATH), davResource.toString()));
-            }
-        });
+        filteredResources.subList(0, aantal).stream().forEach(davResource -> result.add(new StackFile(tagService.genereerTags(davResource.toString(), WEBDAV_PATH), davResource.toString())));
 
         return result;
     }
@@ -82,21 +70,15 @@ public class StackStorageService {
         List<DavResource> resources = sardine.list(pad);
         List<DavResource> result = new ArrayList<>();
 
-        resources.stream().forEach(new Consumer<DavResource>() {
-            @Override
-            public void accept(DavResource davResource) {
-                if (davResource.toString().endsWith(".jpg")) {
-                    result.add(davResource);
-                }
+        resources.stream().forEach(davResource -> {
+            if (davResource.toString().endsWith(".jpg")) {
+                result.add(davResource);
             }
         });
 
-        List<DavResource> resources1 = resources.stream().filter(new Predicate<DavResource>() {
-            @Override
-            public boolean test(DavResource davResource) {
-                String p = pad + "/";
-                return davResource.toString().endsWith("/") && !p.equals(WEBDAV_SERVER + davResource.toString()) && !pad.equals(WEBDAV_SERVER + davResource.toString());
-            }
+        List<DavResource> resources1 = resources.stream().filter(davResource -> {
+            String p = pad + "/";
+            return davResource.toString().endsWith("/") && !p.equals(WEBDAV_SERVER + davResource.toString()) && !pad.equals(WEBDAV_SERVER + davResource.toString());
         }).collect(Collectors.toList());
 
         for (DavResource davResource : resources1) {
@@ -110,15 +92,33 @@ public class StackStorageService {
         return result;
     }
 
+    public List<DavResource> haalDirectoriesOpServerOp(String pad) throws IOException {
+        List<DavResource> resources = sardine.list(pad);
+        List<DavResource> result = new ArrayList<>();
+
+        resources.stream().forEach(davResource -> {
+            if (davResource.isDirectory()) {
+                result.add(davResource);
+            }
+        });
+
+        for (DavResource davResource : resources) {
+            try {
+                result.addAll(haalDirectoriesOpServerOp(WEBDAV_SERVER + davResource.toString()));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return result;
+    }
+
     public void opruimen(IngeplandePost ingeplandePost) {
         List<IngeplandePost> ingeplandePosts = ingeplandePostService.leesPostsMetZelfdeResource(ingeplandePost);
 
-        if (!ingeplandePosts.stream().filter(new Predicate<IngeplandePost>() {
-            @Override
-            public boolean test(IngeplandePost ingeplandePost) {
-                LOGGER.info("{}", ingeplandePost.getTijdstipUitgevoerd());
-                return ingeplandePost.getTijdstipUitgevoerd() == null;
-            }
+        if (!ingeplandePosts.stream().filter(ingeplandePost1 -> {
+            LOGGER.info("{}", ingeplandePost1.getTijdstipUitgevoerd());
+            return ingeplandePost1.getTijdstipUitgevoerd() == null;
         }).findAny().isPresent()) {
             LOGGER.info("opruimen : {}", WEBDAV_SERVER + ingeplandePost.getResource());
             try {
@@ -128,5 +128,14 @@ public class StackStorageService {
             }
         }
 
+        try {
+            for (DavResource davResource : haalDirectoriesOpServerOp(WEBDAV_SERVER + WEBDAV_PATH)) {
+                if (sardine.list(davResource.getPath()).size() == 0) {
+                    sardine.delete(davResource.getPath());
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
