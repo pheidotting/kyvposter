@@ -66,10 +66,17 @@ public class PostInplannenEnUitvoerenService {
             GeplandePost geplandePost = new GeplandePost(ingeplandePost.getId(), ingeplandePost.getMedia(), ingeplandePost.getTijdstipIngepland(), stackFile);
 
             LOGGER.info("Uitvoeren post met id {}, media is {}", ingeplandePost.getId(), ingeplandePost.getMedia());
-            try {
-                uitvoerenService.voeruit(geplandePost);
-            } catch (IOException e) {
-                e.printStackTrace();
+
+            PostInplanService.Dag vandaag = PostInplanService.Dag.getFromDayOfWeek();
+            LocalDateTime nu = LocalDateTime.now();
+            LocalDateTime start = LocalDateTime.of(LocalDate.now(), vandaag.getStartTijd());
+            LocalDateTime eind = LocalDateTime.of(LocalDate.now(), vandaag.getEindTijd());
+            if (nu.isAfter(start) && nu.isBefore(eind)) {
+                try {
+                    uitvoerenService.voeruit(geplandePost);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
 
             stackStorageService.opruimen(ingeplandePost);
