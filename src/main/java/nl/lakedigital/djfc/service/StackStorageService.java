@@ -128,14 +128,14 @@ public class StackStorageService {
             }
         }
 
-        try {
-            for (DavResource davResource : haalDirectoriesOpServerOp(WEBDAV_SERVER + WEBDAV_PATH)) {
-                if (sardine.list(davResource.getPath()).size() == 0) {
-                    sardine.delete(davResource.getPath());
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        //        try {
+        //            for (DavResource davResource : haalDirectoriesOpServerOp(WEBDAV_SERVER + WEBDAV_PATH)) {
+        //                if (sardine.list(davResource.getPath()).size() == 0) {
+        //                    sardine.delete(davResource.getPath());
+        //                }
+        //            }
+        //        } catch (IOException e) {
+        //            e.printStackTrace();
+        //        }
     }
 }
