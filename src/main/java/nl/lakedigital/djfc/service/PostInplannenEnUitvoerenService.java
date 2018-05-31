@@ -59,6 +59,8 @@ public class PostInplannenEnUitvoerenService {
 
 
         alleIngeplandeOnverzondenPostsVandaag.stream().filter(ingeplandePost -> ingeplandePost.getTijdstipIngepland().isBefore(LocalDateTime.now())).forEach(ingeplandePost -> {
+            ingeplandePostService.markeerAlsVerzonden(ingeplandePost);
+
             rateLimiter.acquire();
 
             StackFile stackFile = new StackFile(tagService.genereerTags(ingeplandePost.getResource(), stackStorageService.getWEBDAV_PATH()), ingeplandePost.getResource());
