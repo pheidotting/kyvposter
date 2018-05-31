@@ -1,5 +1,6 @@
 package nl.lakedigital.djfc.models;
 
+import java.util.Collections;
 import java.util.List;
 
 public class StackFile {
@@ -21,6 +22,8 @@ public class StackFile {
 
     public String tagsToString() {
         StringBuilder stringBuilder = new StringBuilder();
+
+        Collections.shuffle(tags);
 
         for (String tag : tags) {
             stringBuilder.append("#");
