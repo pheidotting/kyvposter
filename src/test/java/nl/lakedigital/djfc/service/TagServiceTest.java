@@ -137,7 +137,7 @@ public class TagServiceTest extends EasyMockSupport {
     //mapnaam/img kenteken1.jpg
     @Test
     public void alleenMapNaamMetKenteken() {
-        String bestandsnaam = "mapnaam/img kenteken1.jpg";
+        String bestandsnaam = "mapnaam/img,kenteken1.jpg";
         List<String> verwacht = new ArrayList<>();
         verwacht.add("mapnaam");
         verwacht.add("klazienaveneryoungtimervrienden");
@@ -161,7 +161,7 @@ public class TagServiceTest extends EasyMockSupport {
     //mapnaam/img kenteken1 kenteken2.jpg
     @Test
     public void alleenMapNaamMetKentekens() {
-        String bestandsnaam = "mapnaam/img kenteken1 kenteken2.jpg";
+        String bestandsnaam = "mapnaam/img,kenteken1,kenteken2.jpg";
         List<String> verwacht = new ArrayList<>();
         verwacht.add("mapnaam");
         verwacht.add("klazienaveneryoungtimervrienden");
