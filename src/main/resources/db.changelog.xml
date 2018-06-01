@@ -25,4 +25,10 @@
             <column name="OPGEPAKT" type="BOOLEAN"></column>
         </addColumn>
     </changeSet>
+    <changeSet id="4" author="Patrick Heidotting">
+        <dropColumn tableName="POSTS" columnName="OPGEPAKT"/>
+        <addColumn tableName="POSTS">
+            <column name="OPGEPAKT" type="BOOLEAN" defaultValue="0"></column>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>
