@@ -19,4 +19,10 @@
             <column name="OPGEPAKT" type="tinyint"></column>
         </addColumn>
     </changeSet>
+    <changeSet id="3" author="Patrick Heidotting">
+        <dropColumn tableName="POSTS" columnName="OPGEPAKT"/>
+        <addColumn tableName="POSTS">
+            <column name="OPGEPAKT" type="BOOLEAN"></column>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>
