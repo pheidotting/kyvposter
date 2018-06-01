@@ -62,7 +62,12 @@ public class IngeplandePostService {
 
     public void pakOp(IngeplandePost ingeplandePost) {
         ingeplandePost.setOpgepakt(true);
-        ingepladePostRepository.opslaan(ingeplandePost);
+        opslaan(ingeplandePost);
+    }
+
+    public void resetOpgepakt(IngeplandePost ingeplandePost) {
+        ingeplandePost.setOpgepakt(false);
+        opslaan(ingeplandePost);
     }
 
     public boolean isOpgepakt(IngeplandePost ingeplandePost) {
