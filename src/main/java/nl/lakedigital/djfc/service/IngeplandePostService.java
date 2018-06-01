@@ -59,4 +59,13 @@ public class IngeplandePostService {
     public void opruimen() {
         ingepladePostRepository.opruimen();
     }
+
+    public void pakOp(IngeplandePost ingeplandePost) {
+        ingeplandePost.setOpgepakt(true);
+        ingepladePostRepository.opslaan(ingeplandePost);
+    }
+
+    public boolean isOpgepakt(IngeplandePost ingeplandePost) {
+        return ingepladePostRepository.lees(ingeplandePost.getId()).isOpgepakt();
+    }
 }

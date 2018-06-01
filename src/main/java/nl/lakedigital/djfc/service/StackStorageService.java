@@ -104,7 +104,9 @@ public class StackStorageService {
 
         for (DavResource davResource : resources) {
             try {
-                result.addAll(haalDirectoriesOpServerOp(WEBDAV_SERVER + davResource.toString()));
+                if (!pad.equals(WEBDAV_SERVER + davResource.toString())) {
+                    result.addAll(haalDirectoriesOpServerOp(WEBDAV_SERVER + davResource.toString()));
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -128,14 +130,14 @@ public class StackStorageService {
             }
         }
 
-        //        try {
-        //            for (DavResource davResource : haalDirectoriesOpServerOp(WEBDAV_SERVER + WEBDAV_PATH)) {
-        //                if (sardine.list(davResource.getPath()).size() == 0) {
-        //                    sardine.delete(davResource.getPath());
-        //                }
-        //            }
-        //        } catch (IOException e) {
-        //            e.printStackTrace();
-        //        }
+        try {
+            for (DavResource davResource : haalDirectoriesOpServerOp(WEBDAV_SERVER + WEBDAV_PATH)) {
+                if (sardine.list(WEBDAV_SERVER + davResource.getPath()).size() == 0) {
+                    sardine.delete(davResource.getPath());
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

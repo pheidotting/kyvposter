@@ -59,30 +59,32 @@ public class PostInplannenEnUitvoerenService {
 
 
         alleIngeplandeOnverzondenPostsVandaag.stream().filter(ingeplandePost -> ingeplandePost.getTijdstipIngepland().isBefore(LocalDateTime.now())).forEach(ingeplandePost -> {
-            ingeplandePostService.markeerAlsVerzonden(ingeplandePost);
+            if (!ingeplandePostService.isOpgepakt(ingeplandePost)) {
+                ingeplandePostService.pakOp(ingeplandePost);
 
-            rateLimiter.acquire();
+                rateLimiter.acquire();
 
-            StackFile stackFile = new StackFile(tagService.genereerTags(ingeplandePost.getResource(), stackStorageService.getWEBDAV_PATH()), ingeplandePost.getResource());
+                StackFile stackFile = new StackFile(tagService.genereerTags(ingeplandePost.getResource(), stackStorageService.getWEBDAV_PATH()), ingeplandePost.getResource());
 
-            GeplandePost geplandePost = new GeplandePost(ingeplandePost.getId(), ingeplandePost.getMedia(), ingeplandePost.getTijdstipIngepland(), stackFile);
+                GeplandePost geplandePost = new GeplandePost(ingeplandePost.getId(), ingeplandePost.getMedia(), ingeplandePost.getTijdstipIngepland(), stackFile);
 
-            LOGGER.info("Uitvoeren post met id {}, media is {}", ingeplandePost.getId(), ingeplandePost.getMedia());
+                LOGGER.info("Uitvoeren post met id {}, media is {}", ingeplandePost.getId(), ingeplandePost.getMedia());
 
-            PostInplanService.Dag vandaag = PostInplanService.Dag.getFromDayOfWeek();
-            LocalDateTime nu = LocalDateTime.now();
-            LocalDateTime start = LocalDateTime.of(LocalDate.now(), vandaag.getStartTijd());
-            LocalDateTime eind = LocalDateTime.of(LocalDate.now(), vandaag.getEindTijd());
-            if (nu.isAfter(start) && nu.isBefore(eind)) {
-                try {
-                    uitvoerenService.voeruit(geplandePost);
-                } catch (IOException e) {
-                    e.printStackTrace();
+                PostInplanService.Dag vandaag = PostInplanService.Dag.getFromDayOfWeek();
+                LocalDateTime nu = LocalDateTime.now();
+                LocalDateTime start = LocalDateTime.of(LocalDate.now(), vandaag.getStartTijd());
+                LocalDateTime eind = LocalDateTime.of(LocalDate.now(), vandaag.getEindTijd());
+                if (nu.isAfter(start) && nu.isBefore(eind)) {
+                    try {
+                        uitvoerenService.voeruit(geplandePost);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
-            }
 
-            stackStorageService.opruimen(ingeplandePost);
-            ingeplandePostService.opruimen();
+                stackStorageService.opruimen(ingeplandePost);
+                ingeplandePostService.opruimen();
+            }
         });
     }
 }

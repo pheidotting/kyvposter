@@ -28,7 +28,7 @@ public class TagService {
                         }
                     }
                 } else {
-                    String[] parts = dirs[i].split(" ");
+                    String[] parts = dirs[i].split(",");
                     if (parts.length > 1) {
                         for (int j = 1; j < parts.length; j++) {
                             tags.addAll(rdwService.leesHashTags(parts[j].replace(".jpg", "")));

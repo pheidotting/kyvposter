@@ -26,6 +26,8 @@ public class IngeplandePost {
     private String resource;
     @Column(name = "MEDIA")
     private GeplandePost.Media media;
+    @Column(name = "OPGEPAKT")
+    private boolean opgepakt = false;
 
     public Long getId() {
         return id;
@@ -65,5 +67,13 @@ public class IngeplandePost {
 
     public void setMedia(GeplandePost.Media media) {
         this.media = media;
+    }
+
+    public boolean isOpgepakt() {
+        return opgepakt;
+    }
+
+    public void setOpgepakt(boolean opgepakt) {
+        this.opgepakt = opgepakt;
     }
 }

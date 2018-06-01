@@ -44,6 +44,9 @@ public class UitvoerenService {
             }).findFirst().get();
 
             socialMediaService.voeruit(geplandePost);
+
+            IngeplandePost ingeplandePost = ingeplandePostService.lees(geplandePost.getId());
+            ingeplandePostService.markeerAlsVerzonden(ingeplandePost);
         }
     }
 }

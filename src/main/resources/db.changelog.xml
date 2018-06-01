@@ -14,4 +14,9 @@
             <column name="MEDIA" type="int" />
         </createTable>
     </changeSet>
+    <changeSet id="2" author="Patrick Heidotting">
+        <addColumn tableName="POSTS">
+            <column name="OPGEPAKT" type="tinyint"></column>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>
