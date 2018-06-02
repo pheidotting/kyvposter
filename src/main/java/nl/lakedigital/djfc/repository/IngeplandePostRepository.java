@@ -111,4 +111,8 @@ public class IngeplandePostRepository {
 
         return query.list();
     }
+
+    public void refresh(IngeplandePost ingeplandePost) {
+        getSession().refresh(ingeplandePost);
+    }
 }

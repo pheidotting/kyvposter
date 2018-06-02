@@ -82,7 +82,6 @@ public class PostInplannenEnUitvoerenService {
                     }
                 }
 
-                ingeplandePostService.resetOpgepakt(ingeplandePost);
                 stackStorageService.opruimen(ingeplandePost);
                 ingeplandePostService.opruimen();
             }

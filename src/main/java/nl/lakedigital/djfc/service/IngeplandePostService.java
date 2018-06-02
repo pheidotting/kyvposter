@@ -40,7 +40,9 @@ public class IngeplandePostService {
     }
 
     public void markeerAlsVerzonden(IngeplandePost ingeplandePost) {
+        ingepladePostRepository.refresh(ingeplandePost);
         ingeplandePost.setTijdstipUitgevoerd(LocalDateTime.now());
+        ingeplandePost.setOpgepakt(false);
         ingepladePostRepository.opslaan(ingeplandePost);
     }
 
@@ -61,11 +63,13 @@ public class IngeplandePostService {
     }
 
     public void pakOp(IngeplandePost ingeplandePost) {
+        ingepladePostRepository.refresh(ingeplandePost);
         ingeplandePost.setOpgepakt(true);
         opslaan(ingeplandePost);
     }
 
     public void resetOpgepakt(IngeplandePost ingeplandePost) {
+        ingepladePostRepository.refresh(ingeplandePost);
         ingeplandePost.setOpgepakt(false);
         opslaan(ingeplandePost);
     }
