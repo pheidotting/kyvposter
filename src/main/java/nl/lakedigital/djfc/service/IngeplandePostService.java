@@ -32,6 +32,7 @@ public class IngeplandePostService {
 
     public void stelUit(IngeplandePost ingeplandePost, int aantalMinuten) {
         ingeplandePost.setTijdstipIngepland(LocalDateTime.now().plusMinutes(aantalMinuten));
+        ingeplandePost.setOpgepakt(false);
         opslaan(ingeplandePost);
     }
 
