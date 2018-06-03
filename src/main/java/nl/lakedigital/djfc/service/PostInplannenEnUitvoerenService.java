@@ -39,7 +39,10 @@ public class PostInplannenEnUitvoerenService {
 
         if (alleIngeplandePostsVandaag.isEmpty()) {
             PostInplanService.Dag dag = PostInplanService.Dag.getFromDayOfWeek();
-            overgeblevenPosts.stream().forEach(ingeplandePost -> ingeplandePost.setTijdstipIngepland(LocalDateTime.of(LocalDate.now(), dag.getStartTijd().plusMinutes(10))));
+            overgeblevenPosts.stream().forEach(ingeplandePost -> {
+                ingeplandePost.setTijdstipIngepland(LocalDateTime.of(LocalDate.now(), dag.getStartTijd().plusMinutes(10)));
+                ingeplandePost.setOpgepakt(false);
+            });
             ingeplandePostService.opslaan(overgeblevenPosts);
 
             List<IngeplandePost> nieuweLijst = postInplanService.planPosts(LocalDate.now()).stream().map(geplandePost -> {
