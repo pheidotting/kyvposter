@@ -45,7 +45,7 @@ public class PostInplannenEnUitvoerenService {
             });
             ingeplandePostService.opslaan(overgeblevenPosts);
 
-            List<IngeplandePost> nieuweLijst = postInplanService.planPosts(LocalDate.now()).stream().map(geplandePost -> {
+            List<IngeplandePost> nieuweLijst = postInplanService.planPosts(LocalDate.now(), overgeblevenPosts.size()).stream().map(geplandePost -> {
                 LOGGER.info("{} - {}", geplandePost.getMedia(), geplandePost.getTijdstip());
                 IngeplandePost ingeplandePost = new IngeplandePost();
 

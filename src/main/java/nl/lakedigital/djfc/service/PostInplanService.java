@@ -81,7 +81,7 @@ public class PostInplanService {
         }
     }
 
-    public List<GeplandePost> planPosts(LocalDate datum) {
+    public List<GeplandePost> planPosts(LocalDate datum, int aantalAlAanwezig) {
         final List<GeplandePost> result = new ArrayList<>();
 
         Dag dag = Dag.getFromDayOfWeek(datum.getDayOfWeek());
@@ -100,7 +100,7 @@ public class PostInplanService {
         LOGGER.info("{} Stack bestanden opgehaald", stackFiles.size());
 
         if (stackFiles != null) {
-            int tussenRuimte = bepaalRuimteTussenPosts(dag.getStartTijd(), dag.getEindTijd(), aantalPosts);
+            int tussenRuimte = bepaalRuimteTussenPosts(dag.getStartTijd(), dag.getEindTijd(), aantalPosts + aantalAlAanwezig);
 
             int finalAantalPosts = aantalPosts;
             final int[] teller = {0};
@@ -137,7 +137,7 @@ public class PostInplanService {
             });
 
             if (teller[0] > 10) {
-                return planPosts(datum);
+                return planPosts(datum, aantalAlAanwezig);
             }
         }
 

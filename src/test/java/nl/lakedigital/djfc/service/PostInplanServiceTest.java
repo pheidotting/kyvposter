@@ -41,7 +41,7 @@ public class PostInplanServiceTest extends EasyMockSupport {
 
         replayAll();
 
-        List<GeplandePost> result = postInplanService.planPosts(localDate);
+        List<GeplandePost> result = postInplanService.planPosts(localDate, 0);
 
         verifyAll();
 
