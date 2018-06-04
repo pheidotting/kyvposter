@@ -25,10 +25,10 @@ public class UitvoerenService {
     @Inject
     private PostInplanService postInplanService;
 
-    public void voeruit(GeplandePost geplandePost) throws IOException {
+    public void voeruit(GeplandePost geplandePost, int postsVandaag) throws IOException {
         IngeplandePost laatsUitgevoerdePost = ingeplandePostService.laatstVerstuurdePost();
         PostInplanService.Dag dag = PostInplanService.Dag.getFromDayOfWeek(LocalDate.now().getDayOfWeek());
-        int aantalMinutenTussenPosts = postInplanService.bepaalRuimteTussenPosts(dag.getStartTijd(), dag.getEindTijd(), dag.getMaximumAantalPosts());
+        int aantalMinutenTussenPosts = postInplanService.bepaalRuimteTussenPosts(dag.getStartTijd(), dag.getEindTijd(), postsVandaag);
 
         LOGGER.info("Vorige post is uitgevoerd op {}", laatsUitgevoerdePost.getTijdstipUitgevoerd());
         if (laatsUitgevoerdePost.getTijdstipUitgevoerd().plusMinutes(aantalMinutenTussenPosts).isAfter(LocalDateTime.now())) {

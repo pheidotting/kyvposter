@@ -79,7 +79,7 @@ public class PostInplannenEnUitvoerenService {
                 LocalDateTime eind = LocalDateTime.of(LocalDate.now(), vandaag.getEindTijd());
                 if (nu.isAfter(start) && nu.isBefore(eind)) {
                     try {
-                        uitvoerenService.voeruit(geplandePost);
+                        uitvoerenService.voeruit(geplandePost, alleIngeplandePostsVandaag.size());
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
