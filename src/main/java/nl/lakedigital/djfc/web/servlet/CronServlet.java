@@ -15,8 +15,9 @@ public class CronServlet {
     @Inject
     private PostInplannenEnUitvoerenService postInplannenEnUitvoerenService;
 
-    @Scheduled(fixedDelay = 58000)
+    @Scheduled(fixedDelay = 174000)
     public void run() {
+        LOGGER.info("Run");
         postInplannenEnUitvoerenService.planEnVoerUit();
     }
 }
