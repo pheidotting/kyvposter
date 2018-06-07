@@ -86,7 +86,7 @@ public class PostInplanService {
 
         Dag dag = Dag.getFromDayOfWeek(datum.getDayOfWeek());
 
-        int aantalPosts = ThreadLocalRandom.current().nextInt(dag.getMinimumAantalPosts(), dag.getMaximumAantalPosts());
+        int aantalPosts = ThreadLocalRandom.current().nextInt(dag.getMinimumAantalPosts() * 100, dag.getMaximumAantalPosts() * 100) / 100;
 
         LOGGER.info("Het is vandaag {}, dus we gaan {} posts inplannen per Social Media, dus {} in totaal", dag.toString(), aantalPosts, (aantalPosts * GeplandePost.Media.values().length));
 
