@@ -33,7 +33,7 @@ public class UitvoerenService {
         LOGGER.info("Vorige post is uitgevoerd op {}", laatsUitgevoerdePost.getTijdstipUitgevoerd());
         if (laatsUitgevoerdePost.getTijdstipUitgevoerd().plusMinutes(aantalMinutenTussenPosts).isAfter(LocalDateTime.now())) {
             IngeplandePost ingeplandePost = ingeplandePostService.lees(geplandePost.getId());
-            LOGGER.info("Uitstellen");
+            LOGGER.info("Uitstellen met {} minuten", aantalMinutenTussenPosts);
             ingeplandePostService.stelUit(ingeplandePost, aantalMinutenTussenPosts);
         } else {
             SocialMediaService socialMediaService = socialMediaServices.stream().filter(new Predicate<SocialMediaService>() {
