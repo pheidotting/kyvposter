@@ -42,11 +42,14 @@ public class UitvoerenService {
                     return socialMediaService.voorMij(geplandePost.getMedia());
                 }
             }).findFirst().get();
+            try {
+                socialMediaService.voeruit(geplandePost);
 
-            socialMediaService.voeruit(geplandePost);
-
-            IngeplandePost ingeplandePost = ingeplandePostService.lees(geplandePost.getId());
-            ingeplandePostService.markeerAlsVerzonden(ingeplandePost);
+                IngeplandePost ingeplandePost = ingeplandePostService.lees(geplandePost.getId());
+                ingeplandePostService.markeerAlsVerzonden(ingeplandePost);
+            } catch (Exception e) {
+                LOGGER.error("Fout bij plaatsen foto : {}", e.getMessage());
+            }
         }
     }
 }
