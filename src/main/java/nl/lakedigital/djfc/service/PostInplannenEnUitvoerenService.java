@@ -85,7 +85,9 @@ public class PostInplannenEnUitvoerenService {
                     }
                 }
 
-                stackStorageService.opruimen(ingeplandePost);
+                (new Thread(new OpruimenDavResourceService(ingeplandePost))).start();
+
+                //                stackStorageService.opruimen(ingeplandePost);
                 ingeplandePostService.opruimen();
             }
         });
