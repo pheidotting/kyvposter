@@ -4,7 +4,6 @@ import com.google.common.util.concurrent.RateLimiter;
 import nl.lakedigital.djfc.domain.IngeplandePost;
 import nl.lakedigital.djfc.models.GeplandePost;
 import nl.lakedigital.djfc.models.StackFile;
-import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -17,7 +16,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class PostInplannenEnUitvoerenService implements Runnable {
+public class PostInplannenEnUitvoerenService {
     private static final Logger LOGGER = LoggerFactory.getLogger(PostInplannenEnUitvoerenService.class);
 
     @Inject
@@ -33,11 +32,7 @@ public class PostInplannenEnUitvoerenService implements Runnable {
 
     private RateLimiter rateLimiter = RateLimiter.create(1);
 
-    @Override
-    public void run() {
-        LOGGER.debug("AA");
-        LOGGER.debug("{}", ingeplandePostService);
-
+    public void planEnVoerUit() {
         List<IngeplandePost> alleIngeplandePostsVandaag = ingeplandePostService.ingeplandePostsVoorDatum(LocalDate.now());
         List<IngeplandePost> alleIngeplandeOnverzondenPostsVandaag = ingeplandePostService.ingeplandeOnverzondenPostsVoorDatum(LocalDate.now());
         List<IngeplandePost> overgeblevenPosts = ingeplandePostService.overgeblevenPosts();
@@ -63,11 +58,6 @@ public class PostInplannenEnUitvoerenService implements Runnable {
 
             ingeplandePostService.opslaan(nieuweLijst);
             alleIngeplandeOnverzondenPostsVandaag = nieuweLijst;
-        }
-
-
-        for (IngeplandePost ingeplandePost : alleIngeplandeOnverzondenPostsVandaag) {
-            LOGGER.debug(ReflectionToStringBuilder.toString(ingeplandePost));
         }
 
         alleIngeplandeOnverzondenPostsVandaag.stream().filter(ingeplandePost -> ingeplandePost.getTijdstipIngepland().isBefore(LocalDateTime.now())).forEach(ingeplandePost -> {
