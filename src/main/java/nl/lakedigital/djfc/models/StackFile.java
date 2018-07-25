@@ -31,6 +31,8 @@ public class StackFile {
             stringBuilder.append(" ");
         }
 
-        return stringBuilder.toString().trim();
+        String tags = stringBuilder.toString().trim().replace("#null", "").replace("  ", " ");
+
+        return tags;
     }
 }
