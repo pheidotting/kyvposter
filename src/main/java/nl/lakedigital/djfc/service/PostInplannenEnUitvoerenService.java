@@ -35,6 +35,8 @@ public class PostInplannenEnUitvoerenService implements Runnable {
 
     @Override
     public void run() {
+        LOGGER.debug("AA");
+
         List<IngeplandePost> alleIngeplandePostsVandaag = ingeplandePostService.ingeplandePostsVoorDatum(LocalDate.now());
         List<IngeplandePost> alleIngeplandeOnverzondenPostsVandaag = ingeplandePostService.ingeplandeOnverzondenPostsVoorDatum(LocalDate.now());
         List<IngeplandePost> overgeblevenPosts = ingeplandePostService.overgeblevenPosts();
