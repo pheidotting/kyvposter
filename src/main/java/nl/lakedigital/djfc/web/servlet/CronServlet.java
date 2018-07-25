@@ -18,6 +18,7 @@ public class CronServlet {
     @Scheduled(fixedDelay = 174000)
     public void run() {
         LOGGER.info("Run");
-        postInplannenEnUitvoerenService.planEnVoerUit();
+        (new Thread(new PostInplannenEnUitvoerenService())).start();
+        //        postInplannenEnUitvoerenService.planEnVoerUit();
     }
 }

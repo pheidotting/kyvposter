@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class PostInplannenEnUitvoerenService {
+public class PostInplannenEnUitvoerenService implements Runnable {
     private static final Logger LOGGER = LoggerFactory.getLogger(PostInplannenEnUitvoerenService.class);
 
     @Inject
@@ -32,7 +32,8 @@ public class PostInplannenEnUitvoerenService {
 
     private RateLimiter rateLimiter = RateLimiter.create(1);
 
-    public void planEnVoerUit() {
+    @Override
+    public void run() {
         List<IngeplandePost> alleIngeplandePostsVandaag = ingeplandePostService.ingeplandePostsVoorDatum(LocalDate.now());
         List<IngeplandePost> alleIngeplandeOnverzondenPostsVandaag = ingeplandePostService.ingeplandeOnverzondenPostsVoorDatum(LocalDate.now());
         List<IngeplandePost> overgeblevenPosts = ingeplandePostService.overgeblevenPosts();
@@ -85,9 +86,9 @@ public class PostInplannenEnUitvoerenService {
                     }
                 }
 
-                (new Thread(new OpruimenDavResourceService(ingeplandePost))).start();
+                //                (new Thread(new OpruimenDavResourceService(ingeplandePost))).start();
 
-                //                stackStorageService.opruimen(ingeplandePost);
+                stackStorageService.opruimen(ingeplandePost);
                 ingeplandePostService.opruimen();
             }
         });
