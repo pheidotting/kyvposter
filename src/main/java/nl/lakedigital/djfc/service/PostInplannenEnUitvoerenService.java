@@ -66,29 +66,52 @@ public class PostInplannenEnUitvoerenService {
 
                 rateLimiter.acquire();
 
-                StackFile stackFile = new StackFile(tagService.genereerTags(ingeplandePost.getResource(), stackStorageService.getWEBDAV_PATH()), ingeplandePost.getResource());
-
-                GeplandePost geplandePost = new GeplandePost(ingeplandePost.getId(), ingeplandePost.getMedia(), ingeplandePost.getTijdstipIngepland(), stackFile);
-
-                LOGGER.info("Uitvoeren post met id {}, media is {}", ingeplandePost.getId(), ingeplandePost.getMedia());
-
-                PostInplanService.Dag vandaag = PostInplanService.Dag.getFromDayOfWeek();
-                LocalDateTime nu = LocalDateTime.now();
-                LocalDateTime start = LocalDateTime.of(LocalDate.now(), vandaag.getStartTijd());
-                LocalDateTime eind = LocalDateTime.of(LocalDate.now(), vandaag.getEindTijd());
-                if (nu.isAfter(start) && nu.isBefore(eind)) {
-                    try {
-                        uitvoerenService.voeruit(geplandePost, alleIngeplandePostsVandaag.size());
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                //                (new Thread(new OpruimenDavResourceService(ingeplandePost))).start();
-
-                stackStorageService.opruimen(ingeplandePost);
-                ingeplandePostService.opruimen();
+                (new Thread(new Go(ingeplandePost, alleIngeplandePostsVandaag, ingeplandePostService, uitvoerenService, tagService, stackStorageService))).start();
             }
         });
+    }
+
+    private class Go implements Runnable {
+        private IngeplandePost ingeplandePost;
+        private List<IngeplandePost> alleIngeplandePostsVandaag;
+        private IngeplandePostService ingeplandePostService;
+        private UitvoerenService uitvoerenService;
+        private TagService tagService;
+        private StackStorageService stackStorageService;
+
+        public Go(IngeplandePost ingeplandePost, List<IngeplandePost> alleIngeplandePostsVandaag, IngeplandePostService ingeplandePostService, UitvoerenService uitvoerenService, TagService tagService, StackStorageService stackStorageService) {
+            this.ingeplandePost = ingeplandePost;
+            this.alleIngeplandePostsVandaag = alleIngeplandePostsVandaag;
+            this.ingeplandePostService = ingeplandePostService;
+            this.uitvoerenService = uitvoerenService;
+            this.tagService = tagService;
+            this.stackStorageService = stackStorageService;
+        }
+
+        @Override
+        public void run() {
+            StackFile stackFile = new StackFile(tagService.genereerTags(ingeplandePost.getResource(), stackStorageService.getWEBDAV_PATH()), ingeplandePost.getResource());
+
+            GeplandePost geplandePost = new GeplandePost(ingeplandePost.getId(), ingeplandePost.getMedia(), ingeplandePost.getTijdstipIngepland(), stackFile);
+
+            LOGGER.info("Uitvoeren post met id {}, media is {}", ingeplandePost.getId(), ingeplandePost.getMedia());
+
+            PostInplanService.Dag vandaag = PostInplanService.Dag.getFromDayOfWeek();
+            LocalDateTime nu = LocalDateTime.now();
+            LocalDateTime start = LocalDateTime.of(LocalDate.now(), vandaag.getStartTijd());
+            LocalDateTime eind = LocalDateTime.of(LocalDate.now(), vandaag.getEindTijd());
+            if (nu.isAfter(start) && nu.isBefore(eind)) {
+                try {
+                    uitvoerenService.voeruit(geplandePost, alleIngeplandePostsVandaag.size());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            //                (new Thread(new OpruimenDavResourceService(ingeplandePost))).start();
+
+            stackStorageService.opruimen(ingeplandePost);
+            ingeplandePostService.opruimen();
+        }
     }
 }
