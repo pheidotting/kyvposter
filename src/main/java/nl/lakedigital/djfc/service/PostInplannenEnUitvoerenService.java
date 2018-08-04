@@ -64,7 +64,9 @@ public class PostInplannenEnUitvoerenService {
             if (!ingeplandePostService.isOpgepakt(ingeplandePost)) {
                 ingeplandePostService.pakOp(ingeplandePost);
 
+                LOGGER.trace("net voor rateLimiter.acquire();");
                 rateLimiter.acquire();
+                LOGGER.trace("net na rateLimiter.acquire();");
 
                 StackFile stackFile = new StackFile(tagService.genereerTags(ingeplandePost.getResource(), stackStorageService.getWEBDAV_PATH()), ingeplandePost.getResource());
 
