@@ -31,7 +31,7 @@ public class UitvoerenService {
         int aantalMinutenTussenPosts = postInplanService.bepaalRuimteTussenPosts(dag.getStartTijd(), dag.getEindTijd(), postsVandaag);
 
         LOGGER.info("Vorige post is uitgevoerd op {}", laatsUitgevoerdePost.getTijdstipUitgevoerd());
-        if (laatsUitgevoerdePost != null && laatsUitgevoerdePost.getTijdstipUitgevoerd().plusMinutes(aantalMinutenTussenPosts).isAfter(LocalDateTime.now())) {
+        if (laatsUitgevoerdePost != null && laatsUitgevoerdePost.getTijdstipUitgevoerd() != null && laatsUitgevoerdePost.getTijdstipUitgevoerd().plusMinutes(aantalMinutenTussenPosts).isAfter(LocalDateTime.now())) {
             IngeplandePost ingeplandePost = ingeplandePostService.lees(geplandePost.getId());
             LOGGER.info("Uitstellen met {} minuten", aantalMinutenTussenPosts);
             ingeplandePostService.stelUit(ingeplandePost, aantalMinutenTussenPosts);
