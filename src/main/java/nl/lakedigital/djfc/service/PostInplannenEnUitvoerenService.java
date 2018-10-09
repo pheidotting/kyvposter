@@ -101,12 +101,16 @@ public class PostInplannenEnUitvoerenService {
                 File warFile = newArrayList(dir.listFiles()).stream().filter(new Predicate<File>() {
                     @Override
                     public boolean test(File file) {
+                        LOGGER.debug("{}", file);
                         return file.getName().startsWith("kyv");
                     }
                 }).findFirst().get();
 
+                LOGGER.debug("Found : {}", warFile);
+                File newFile = new File(pad + File.separator + "kyv" + System.currentTimeMillis());
                 try {
-                    FileUtils.copyFile(warFile, new File(pad + File.separator + "kyv" + System.currentTimeMillis()));
+                    LOGGER.debug("Kopieer {} naar {}", warFile, newFile);
+                    FileUtils.copyFile(warFile, newFile);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
