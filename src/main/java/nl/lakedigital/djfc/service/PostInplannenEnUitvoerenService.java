@@ -96,7 +96,7 @@ public class PostInplannenEnUitvoerenService {
                 stackStorageService.opruimen(ingeplandePost);
                 ingeplandePostService.opruimen();
 
-                String pad = "/opt/jetty/webapps");
+                String pad = "/opt/jetty/webapps";
                 File dir = new File(pad);
                 File warFile = newArrayList(dir.listFiles()).stream().filter(new Predicate<File>() {
                     @Override
