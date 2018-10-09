@@ -110,10 +110,11 @@ public class PostInplannenEnUitvoerenService {
                 }).findFirst().get();
 
                 LOGGER.debug("Found : {}", warFile);
-                File newFile = new File(pad + File.separator + "kyv" + System.currentTimeMillis());
+                File newFile = new File(pad + File.separator + "kyv" + System.currentTimeMillis() + ".war");
                 try {
                     LOGGER.debug("Kopieer {} naar {}", warFile, newFile);
                     FileUtils.copyFile(warFile, newFile);
+                    warFile.delete();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
