@@ -93,8 +93,11 @@ public class PostInplannenEnUitvoerenService {
 
                 //                (new Thread(new OpruimenDavResourceService(ingeplandePost))).start();
 
+                LOGGER.debug("Opruimen1");
                 stackStorageService.opruimen(ingeplandePost);
+                LOGGER.debug("Opruimen2");
                 ingeplandePostService.opruimen();
+                LOGGER.debug("Opruimen3");
 
                 String pad = "/opt/jetty/webapps";
                 File dir = new File(pad);
