@@ -185,4 +185,19 @@ public class TagServiceTest extends EasyMockSupport {
 
         verifyAll();
     }
+
+    //    @Test
+    //    public void aa() throws IOException {
+    //        String pad="/Users/patrickheidotting/Documents/DEV/Java/jetty/comm/webapps";
+    //        File dir = new File(pad);
+    //        File warFile =         newArrayList(dir.listFiles()).stream().filter(new Predicate<File>() {
+    //            @Override
+    //            public boolean test(File file) {
+    //                return file.getName().startsWith("kyv"+System.currentTimeMillis());
+    //            }
+    //        }).findFirst().get();
+    ////
+    ////        FileUtils.copyFile(warFile, new File(pad+File.separator+"kyv"));
+    //        System.out.println(        System.currentTimeMillis());
+    //    }
 }
