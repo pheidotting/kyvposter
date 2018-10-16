@@ -4,21 +4,16 @@ import com.google.common.util.concurrent.RateLimiter;
 import nl.lakedigital.djfc.domain.IngeplandePost;
 import nl.lakedigital.djfc.models.GeplandePost;
 import nl.lakedigital.djfc.models.StackFile;
-import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
-import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
-
-import static com.google.common.collect.Lists.newArrayList;
 
 @Service
 public class PostInplannenEnUitvoerenService {
@@ -99,31 +94,31 @@ public class PostInplannenEnUitvoerenService {
                 ingeplandePostService.opruimen();
                 LOGGER.debug("Opruimen3");
 
-                String pad = "/opt/jetty/webapps";
-                File dir = new File(pad);
-                File warFile = newArrayList(dir.listFiles()).stream().filter(new Predicate<File>() {
-                    @Override
-                    public boolean test(File file) {
-                        LOGGER.debug("{}", file);
-                        return file.getName().startsWith("kyv");
-                    }
-                }).findFirst().get();
-
-                LOGGER.debug("Found : {}", warFile);
-                File newFile = new File(pad + File.separator + "kyv" + System.currentTimeMillis() + ".war");
-                try {
-                    LOGGER.debug("Kopieer {} naar {}", warFile, newFile);
-                    FileUtils.copyFile(warFile, newFile);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    if (!warFile.delete()) {
-                        LOGGER.error("Bestand {} kon niet worden verwijderd.", warFile);
-                    }
-                } catch (SecurityException e) {
-                    LOGGER.error("Fout bij verwijderen bestand {}, {}", warFile, e);
-                }
+                //                String pad = "/opt/jetty/webapps";
+                //                File dir = new File(pad);
+                //                File warFile = newArrayList(dir.listFiles()).stream().filter(new Predicate<File>() {
+                //                    @Override
+                //                    public boolean test(File file) {
+                //                        LOGGER.debug("{}", file);
+                //                        return file.getName().startsWith("kyv");
+                //                    }
+                //                }).findFirst().get();
+                //
+                //                LOGGER.debug("Found : {}", warFile);
+                //                File newFile = new File(pad + File.separator + "kyv" + System.currentTimeMillis() + ".war");
+                //                try {
+                //                    LOGGER.debug("Kopieer {} naar {}", warFile, newFile);
+                //                    FileUtils.copyFile(warFile, newFile);
+                //                } catch (IOException e) {
+                //                    e.printStackTrace();
+                //                }
+                //                try {
+                //                    if (!warFile.delete()) {
+                //                        LOGGER.error("Bestand {} kon niet worden verwijderd.", warFile);
+                //                    }
+                //                } catch (SecurityException e) {
+                //                    LOGGER.error("Fout bij verwijderen bestand {}, {}", warFile, e);
+                //                }
             }
         });
     }
