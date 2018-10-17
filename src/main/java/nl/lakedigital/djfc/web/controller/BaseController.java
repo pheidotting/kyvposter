@@ -116,6 +116,11 @@ public class BaseController {
         return "";//String.valueOf(userResult.getUser().getFollower_count());
     }
 
+    @RequestMapping(method = RequestMethod.GET, value = "/test")
+    @ResponseBody
+    public void test() {
+
+    }
     @RequestMapping(method = RequestMethod.GET, value = "/opruimen")
     @ResponseBody
     public void opruimen() throws IOException {
